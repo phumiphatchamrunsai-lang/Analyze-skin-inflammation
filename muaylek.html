@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPT Skin Analyzer</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#ffffff;
+    min-height:100vh;
+}
+
+/* แถบบน */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 40px;
+}
+
+.logo{
+    font-size:28px;
+    font-weight:bold;
+    color:#1f4e79;
+}
+
+.manual{
+    text-decoration:none;
+    color:#1f4e79;
+    font-weight:600;
+}
+
+.manual:hover{
+    text-decoration:underline;
+}
+
+/* ส่วนกลาง */
+.container{
+    text-align:center;
+    margin-top:40px;
+}
+
+.icon{
+    font-size:80px;
+}
+
+h1{
+    color:#1f4e79;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+.description{
+    max-width:650px;
+    margin:auto;
+    color:#555;
+    line-height:1.8;
+    padding:0 20px;
+}
+
+/* ปุ่ม */
+.menu{
+    margin-top:50px;
+}
+
+.btn{
+    display:block;
+    width:320px;
+    margin:20px auto;
+    padding:20px;
+    background:#d9efff;
+    border:none;
+    border-radius:18px;
+    cursor:pointer;
+    font-size:18px;
+    font-weight:bold;
+    color:#1f4e79;
+    transition:0.3s;
+}
+
+.btn:hover{
+    background:#bfe4ff;
+    transform:translateY(-3px);
+}
+
+/* เวอร์ชัน */
+.version{
+    margin-top:50px;
+    color:#888;
+    font-size:14px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="logo">CPT Skin Analyzer</div>
+    <a href="#" class="manual">คู่มือการใช้งาน</a>
+</div>
+
+<div class="container">
+
+    <div class="icon">🩺</div>
+
+    <h1>CPT Skin Analyzer</h1>
+
+    <p class="description">
+        ระบบวิเคราะห์การเปลี่ยนแปลงของผื่นอักเสบจากภาพถ่าย
+        เพื่อใช้ติดตามผลการใช้
+        CPT: Herbal Patch Innovation
+    </p>
+
+    <div class="menu">
+
+          <button class="btn"
+        onclick="location.href='Muaylek2.html'">
+            วิเคราะห์การเปลี่ยนแปลงของผื่นอักเสบ
+         </button>  
+
+        <button class="btn">
+            ข้อมูลเกี่ยวกับการเกิดผื่นอักเสบ
+        </button>
+
+        <button class="btn">
+            คำแนะนำในการดูแลและรักษา
+        </button>
+
+    </div>
+
+    <div class="version">
+        Version 1.0
+    </div>
+
+</div>
+
+</body>
+</html>
