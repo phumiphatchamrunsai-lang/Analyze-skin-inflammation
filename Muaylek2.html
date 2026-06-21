@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>วิเคราะห์การเปลี่ยนแปลงของผื่นอักเสบ</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:#ffffff;
+}
+
+/* ปุ่มกลับ */
+.top-bar{
+    padding:20px 40px;
+}
+
+.back-btn{
+    text-decoration:none;
+    color:#1f4e79;
+    font-weight:bold;
+    font-size:18px;
+}
+
+/* กล่องหลัก */
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+/* หัวข้อ */
+h1{
+    text-align:center;
+    color:#1f4e79;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:40px;
+    line-height:1.8;
+}
+
+/* การ์ด */
+.card{
+    background:#f5fbff;
+    border:1px solid #d9efff;
+    border-radius:20px;
+    padding:25px;
+    margin-bottom:25px;
+}
+
+.card h2{
+    color:#1f4e79;
+    margin-bottom:15px;
+}
+
+/* อัปโหลด */
+input[type="file"]{
+    width:100%;
+    padding:12px;
+}
+
+/* ปุ่ม */
+.button-group{
+    text-align:center;
+    margin:30px 0;
+}
+
+.btn{
+    background:#d9efff;
+    border:none;
+    padding:15px 35px;
+    border-radius:15px;
+    color:#1f4e79;
+    font-weight:bold;
+    font-size:16px;
+    cursor:pointer;
+    margin:10px;
+    transition:0.3s;
+}
+
+.btn:hover{
+    background:#bfe4ff;
+    transform:translateY(-2px);
+}
+
+/* กล่องตรวจสอบ */
+.check-item{
+    margin:10px 0;
+    font-size:16px;
+    color:#444;
+}
+
+/* ผลลัพธ์ */
+.result-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+    margin-top:20px;
+}
+
+.result-box{
+    background:white;
+    border-radius:15px;
+    padding:15px;
+    border:1px solid #d9efff;
+}
+
+.result-title{
+    color:#1f4e79;
+    font-weight:bold;
+}
+
+.result-value{
+    margin-top:8px;
+    color:#555;
+}
+
+.status{
+    margin-top:20px;
+    text-align:center;
+    font-weight:bold;
+    color:#888;
+}
+
+@media(max-width:768px){
+
+.result-grid{
+    grid-template-columns:1fr;
+}
+
+}
+.preview-box{
+    margin-top:15px;
+    text-align:center;
+}
+
+.preview-canvas{
+    max-width:100%;
+    border:1px solid #d9efff;
+    border-radius:15px;
+    margin-top:15px;
+    cursor:auto;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="top-bar">
+    <a href="muaylek.html" class="back-btn">
+        ← กลับหน้าหลัก
+    </a>
+</div>
+
+<div class="container">
+
+    <h1>วิเคราะห์การเปลี่ยนแปลงของผื่นอักเสบ</h1>
+
+    <p class="subtitle">
+        ระบบวิเคราะห์ค่าความแดงของผิวหนังและพื้นที่ของผื่นอักเสบ
+        จากภาพถ่ายก่อนและหลังการใช้แผ่นแปะสมุนไพร
+    </p>
+    <div class="card">
+        
+    <!-- ภาพก่อน -->
+    <div class="card">
+        <h2>📷 ภาพก่อนการใช้แผ่นแปะสมุนไพร</h2>
+        <input type="file" id="beforeImage">
+        <div class="preview-box">
+    <canvas id="beforePreview" class="preview-canvas"></canvas>
+          </div>
+    </div>
+
+    <!-- ภาพหลัง -->
+    <div class="card">
+        <h2>📷 ภาพหลังการใช้แผ่นแปะสมุนไพร</h2>
+        <input type="file" id="afterImage">
+        <div class="preview-box">
+    <canvas id="afterPreview" class="preview-canvas"></canvas>
+           </div>
+
+    </div>
+
+
+
+    <!-- ตรวจสอบคุณภาพ -->
+    <div class="card">
+        <h2>⚙️ การตรวจสอบคุณภาพภาพ</h2>
+
+      <div class="check-item" id="skinCheck">
+         ☐ ตรวจพบผิวหนัง
+         </div>
+
+       <div class="check-item" id="brightnessCheck">
+    ☐ ความสว่างของภาพเหมาะสม
+          </div>
+
+      <div class="check-item" id="rednessCheck">
+       ☐ ตรวจพบบริเวณที่มีความแดง
+          </div>
+    </div>
+
+    <!-- เลือกพื้นที่ -->
+   <h2>🔬 Automated Lesion Detection</h2>
+
+    <p style="color:#666;">
+     ระบบตรวจจับบริเวณผื่นอักเสบจากการวิเคราะห์สีผิวในระบบ HSV และคำนวณค่าความรุนแรงของการอักเสบโดยอัตโนมัติ
+      </p>
+    <!-- ปุ่ม -->
+    <div class="button-group">
+
+        <button class="btn" onclick="analyze()">
+    เริ่มการวิเคราะห์
+        </button>
+        <button class="btn" onclick="saveResult()">
+    บันทึกผลการวิเคราะห์
+           </button>
+
+        <button class="btn" onclick="clearData()">
+    ล้างข้อมูล
+         </button>
+        <div class="statusText" id="statusText">
+    สถานะ : ⏳ รอการวิเคราะห์ข้อมูลภาพ
+</div>
+
+
+    </div>
+
+    <!-- ผลลัพธ์ -->
+    <div class="result-grid">
+
+    <div class="result-box">
+        <div class="result-title">
+            ค่าความแดงก่อนการใช้
+        </div>
+        <div class="result-value" id="beforeRedness">-</div>
+    </div>
+
+    <div class="result-box">
+        <div class="result-title">
+            ค่าความแดงหลังการใช้
+        </div>
+        <div class="result-value" id="afterRedness">-</div>
+    </div>
+
+    <div class="result-box">
+        <div class="result-title">
+            พื้นที่ผื่นก่อนการใช้
+        </div>
+        <div class="result-value" id="beforeArea">-</div>
+    </div>
+
+    <div class="result-box">
+        <div class="result-title">
+            พื้นที่ผื่นหลังการใช้
+        </div>
+        <div class="result-value" id="afterArea">-</div>
+    </div>
+
+    <div class="result-box">
+        <div class="result-title">
+            ร้อยละการเปลี่ยนแปลง
+        </div>
+        <div class="result-value" id="percentChange">-</div>
+    </div>
+    <div class="result-box">
+    <div class="result-title">
+        Erythema Index (EI)
+    </div>
+    <div class="result-value" id="erythemaIndex">-</div>
+</div>
+
+<div class="result-box">
+    <div class="result-title">
+        พื้นที่รอยแดง (%)
+    </div>
+    <div class="result-value" id="redAreaPercent">-</div>
+</div>
+
+
+    <div class="result-box">
+    <div class="result-title">
+        สรุปผล
+    </div>
+    <div class="result-value" id="summaryResult">-</div>
+ </div>
+     <div class="result-box">
+    <div class="result-title">
+        จำนวนพิกเซลที่วิเคราะห์
+</div>
+    <div class="result-value" id="pixelCount">-</div>
+ </div>
+ <div class="result-box">
+    <div class="result-title">
+        Red Pixel Count
+    </div>
+    <div class="result-value" id="redPixelCount">-</div>
+</div>
+<div class="result-box">
+    <div class="result-title">
+        พื้นที่รอยแดงลดลง
+    </div>
+    <div class="result-value" id="redAreaReduction">
+        -
+    </div>
+</div>
+<div class="result-box">
+    <div class="result-title">
+        Confidence Score
+    </div>
+    <div class="result-value" id="confidenceScore">
+        -
+    </div>
+</div>
+<div class="result-box">
+    <div class="result-title">
+        Clinical Interpretation
+    </div>
+    <div class="result-value" id="clinicalResult">
+        -
+    </div>
+</div>
+
+</div>
+
+
+</div>
+<script>
+let beforeRect = null;
+let afterRect = null;
+
+const beforeCanvas = document.getElementById("beforePreview");
+const beforeCtx = beforeCanvas.getContext("2d");
+
+const afterCanvas = document.getElementById("afterPreview");
+const afterCtx = afterCanvas.getContext("2d");
+
+let img = new Image();
+let imgAfter = new Image();
+
+let isDrawing = false;
+let isDrawing2 = false;
+
+let startX = 0, startY = 0;
+let startX2 = 0, startY2 = 0;
+
+let rect = null;
+
+// ---------------- BEFORE IMAGE ----------------
+document.getElementById("beforeImage").addEventListener("change", function(e){
+
+    const file = e.target.files[0];
+    if(!file) return;
+
+    img.onload = function(){
+        beforeCanvas.width = img.width;
+        beforeCanvas.height = img.height;
+        beforeCtx.drawImage(img,0,0);
+    };
+
+    img.src = URL.createObjectURL(file);
+});
+
+// ---------------- AFTER IMAGE ----------------
+document.getElementById("afterImage").addEventListener("change", function(e){
+
+    const file = e.target.files[0];
+    if(!file) return;
+
+    imgAfter.onload = function(){
+        afterCanvas.width = imgAfter.width;
+        afterCanvas.height = imgAfter.height;
+        afterCtx.drawImage(imgAfter,0,0);
+    };
+
+    imgAfter.src = URL.createObjectURL(file);
+});
+
+
+function rgbToHsv(r, g, b){
+
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    let max = Math.max(r,g,b);
+    let min = Math.min(r,g,b);
+
+    let h,s,v = max;
+
+    let d = max - min;
+
+    s = max === 0 ? 0 : d / max;
+
+    if(max === min){
+        h = 0;
+    }
+    else{
+        switch(max){
+
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0);
+                break;
+
+            case g:
+                h = (b - r) / d + 2;
+                break;
+
+            case b:
+                h = (r - g) / d + 4;
+                break;
+        }
+
+        h /= 6;
+    }
+
+    return {
+        h: h * 360,
+        s: s * 100,
+        v: v * 100
+    };
+}
+
+function findRedRegion(ctx, canvas){
+
+    const data =
+    ctx.getImageData(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    ).data;
+
+    let minX = canvas.width;
+    let minY = canvas.height;
+
+    let maxX = 0;
+    let maxY = 0;
+
+    let found = false;
+
+    for(let y=0;y<canvas.height;y++){
+
+        for(let x=0;x<canvas.width;x++){
+
+            let i =
+            (y * canvas.width + x) * 4;
+
+            let r = data[i];
+            let g = data[i+1];
+            let b = data[i+2];
+
+            const hsv =
+            rgbToHsv(r,g,b);
+
+            if(
+                (hsv.h < 20 || hsv.h > 340)
+                &&
+                hsv.s > 30
+                &&
+                hsv.v > 20
+            ){
+
+                found = true;
+
+                if(x < minX) minX = x;
+                if(y < minY) minY = y;
+
+                if(x > maxX) maxX = x;
+                if(y > maxY) maxY = y;
+            }
+        }
+    }
+
+    if(!found){
+        return null;
+    }
+
+    return {
+        x:minX,
+        y:minY,
+        w:maxX-minX,
+        h:maxY-minY
+    };
+}
+function analyzeRegion(ctx, rect){
+
+    const imageData =
+    ctx.getImageData(
+        rect.x,
+        rect.y,
+        rect.w,
+        rect.h
+    ).data;
+
+    let totalPixels = 0;
+    let redPixels = 0;
+    let rednessSum = 0;
+
+    for(let i=0;i<imageData.length;i+=4){
+
+        const r = imageData[i];
+        const g = imageData[i+1];
+        const b = imageData[i+2];
+
+        totalPixels++;
+
+        rednessSum += (r-(g+b)/2);
+
+        const hsv = rgbToHsv(r,g,b);
+
+        if(
+            (hsv.h < 20 || hsv.h > 340)
+            &&
+            hsv.s > 30
+            &&
+            hsv.v > 20
+        ){
+            redPixels++;
+        }
+    }
+
+    return{
+        redness:rednessSum/totalPixels,
+        totalPixels,
+        redPixels,
+        redPercent:(redPixels/totalPixels)*100
+    };
+}
+// ---------------- ANALYZE ----------------
+function analyze(){
+    if(beforeCanvas.width === 0 || afterCanvas.width === 0){
+    alert("กรุณาอัปโหลดภาพก่อนและหลัง");
+    return;
+}
+beforeRect =
+findRedRegion(beforeCtx,beforeCanvas);
+
+afterRect =
+findRedRegion(afterCtx,afterCanvas);
+
+if(!beforeRect || !afterRect){
+
+    alert("ไม่พบบริเวณผื่น");
+    return;
+}
+
+beforeCtx.drawImage(img,0,0);
+
+beforeCtx.strokeStyle = "lime";
+beforeCtx.lineWidth = 4;
+
+beforeCtx.strokeRect(
+    beforeRect.x,
+    beforeRect.y,
+    beforeRect.w,
+    beforeRect.h
+);
+
+afterCtx.drawImage(imgAfter,0,0);
+
+afterCtx.strokeStyle = "lime";
+afterCtx.lineWidth = 4;
+
+afterCtx.strokeRect(
+    afterRect.x,
+    afterRect.y,
+    afterRect.w,
+    afterRect.h
+);
+
+if(!beforeRect || !afterRect){
+
+    alert("ไม่พบบริเวณผื่น");
+    return;
+}
+
+   
+const beforeData =
+analyzeRegion(beforeCtx,beforeRect);
+
+const afterData =
+analyzeRegion(afterCtx,afterRect);
+
+let beforeVal =
+beforeData.redness;
+
+let afterVal =
+afterData.redness;
+let redAreaReduction = 0;
+
+if(beforeData.redPercent > 0){
+
+    redAreaReduction =
+    (
+    (beforeData.redPercent -
+     afterData.redPercent)
+    /
+    beforeData.redPercent
+    ) * 100;
+}
+    let EI =
+Math.log(beforeVal + 255)
+-
+Math.log(afterVal + 255);
+
+   let percent = beforeVal !== 0
+? ((beforeVal - afterVal) / beforeVal) * 100
+: 0;
+    const imageData =
+    beforeCtx.getImageData(
+        beforeRect.x,
+        beforeRect.y,
+        beforeRect.w,
+        beforeRect.h
+    ).data;
+
+let skinPixels = 0;
+let redPixels = 0;
+let brightnessSum = 0;
+let totalPixels = 0;
+
+for(let i=0;i<imageData.length;i+=4){
+
+    let r = imageData[i];
+    let g = imageData[i+1];
+    let b = imageData[i+2];
+
+    totalPixels++;
+
+    brightnessSum += (r+g+b)/3;
+
+    // ตรวจผิวหนัง
+    if(
+        r > 95 &&
+        g > 40 &&
+        b > 20 &&
+        r > g &&
+        r > b
+    ){
+        skinPixels++;
+    }
+
+    // ตรวจความแดง
+const hsv = rgbToHsv(r,g,b);
+
+if(
+    (
+        hsv.h < 15 ||
+        hsv.h > 345
+    )
+    &&
+    hsv.s > 45
+    &&
+    hsv.v > 40
+){
+    redPixels++;
+}
+} 
+let skinPercent =
+(skinPixels / totalPixels) * 100;
+let redPercent =
+afterData.redPercent;
+
+// ค่านี้ใช้ในงานวิจัย
+let inflamedAreaRatio =
+(redPixels / totalPixels) * 100;
+console.log("redPixels =", redPixels);
+console.log("totalPixels =", totalPixels);
+console.log("redPercent =", redPercent);
+
+let avgBrightness =
+brightnessSum / totalPixels;
+document.getElementById("skinCheck").innerHTML =
+skinPercent > 30
+? "☑ ตรวจพบผิวหนัง"
+: "☒ ไม่พบผิวหนัง";
+
+document.getElementById("brightnessCheck").innerHTML =
+(avgBrightness > 60 && avgBrightness < 220)
+? "☑ ความสว่างของภาพเหมาะสม"
+: "☒ ความสว่างไม่เหมาะสม";
+
+document.getElementById("rednessCheck").innerHTML =
+redPercent > 5
+? "☑ ตรวจพบบริเวณที่มีความแดง"
+: "☒ ไม่พบบริเวณที่มีความแดง";
+    let beforeArea =
+    Math.abs(beforeRect.w * beforeRect.h);
+
+    let afterArea =
+    Math.abs(afterRect.w * afterRect.h);
+
+    document.getElementById("beforeRedness").innerHTML =
+    beforeVal.toFixed(2);
+
+    document.getElementById("afterRedness").innerHTML =
+    afterVal.toFixed(2);
+
+    document.getElementById("beforeArea").innerHTML =
+    beforeArea.toFixed(0) + " px²";
+
+    document.getElementById("afterArea").innerHTML =
+    afterArea.toFixed(0) + " px²";
+
+    document.getElementById("percentChange").innerHTML =
+    percent.toFixed(2) + "%";
+    document.getElementById("erythemaIndex").innerHTML =
+EI.toFixed(2);
+document.getElementById("redAreaPercent").innerHTML =
+inflamedAreaRatio.toFixed(2) + "%";
+
+
+    document.getElementById("statusText").innerHTML =
+    "สถานะ :✅ วิเคราะห์ข้อมูลเสร็จสมบูรณ์";
+    let summary = "";
+
+if(Math.abs(percent) < 15){
+    summary = "ไม่พบการเปลี่ยนแปลง";
+}
+else if(percent > 0){
+    summary = "ผื่นอักเสบลดลง";
+}
+else{
+    summary = "ผื่นอักเสบเพิ่มขึ้น";
+}
+document.getElementById("summaryResult").innerHTML =
+summary;
+document.getElementById("pixelCount").innerHTML =
+totalPixels.toLocaleString() + " pixels";
+document.getElementById("redPixelCount").innerHTML =
+redPixels.toLocaleString() + " pixels";
+document.getElementById("redAreaReduction").innerHTML =
+redAreaReduction.toFixed(2) + "%";
+let confidence = 100;
+
+if(avgBrightness < 60 || avgBrightness > 220){
+    confidence -= 20;
+}
+
+if(skinPercent < 50){
+    confidence -= 20;
+}
+
+if(redPixels < 50){
+    confidence -= 20;
+}
+
+confidence = Math.max(confidence,0);
+
+let clinical = "";
+
+if(Math.abs(redAreaReduction) < 15){
+    clinical = "ไม่พบการระคายเคืองจากแผ่นแปะ";
+}
+else if(redAreaReduction >= 15){
+    clinical = "ค่าความแดงลดลง";
+}
+else{
+    clinical = "อาจเกิดการระคายเคือง";
+}
+document.getElementById("clinicalResult").innerHTML =
+clinical;
+document.getElementById("confidenceScore").innerHTML =
+confidence + "%";
+
+
+afterCtx.strokeStyle = "lime";
+beforeCtx.strokeStyle = "lime";
+    
+}
+function saveResult(){
+
+const result = {
+    beforeRedness: document.getElementById("beforeRedness").innerText,
+    afterRedness: document.getElementById("afterRedness").innerText,
+    percentChange: document.getElementById("percentChange").innerText,
+    clinical: document.getElementById("clinicalResult").innerText
+};
+localStorage.setItem(
+    "lastResult",
+    JSON.stringify(result)
+);
+
+alert("บันทึกข้อมูลสำเร็จ");
+}
+function clearData(){
+
+location.reload();
+
+}
+</script>
+</body>
+</html>
